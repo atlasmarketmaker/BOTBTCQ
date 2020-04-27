@@ -270,78 +270,94 @@ namespace BOT_BTCQ
         private void button1_Click(object sender, EventArgs e)
         {
 
-
-            var client = new RestClient("https://quantum.atlasquantum.com/api/oauth/token");
-            client.Timeout = -1;
-            var request = new RestRequest(Method.POST);
-            request.AddHeader("Content-Type", "text/plain");
-            request.AddParameter("text/plain", "{\r\n\t\"grant_type\":\"client_credentials\",\r\n\t\"api_key\":\"" + txtID.Text + "\",\r\n\t\"api_secret\":\"" + txtSECRET.Text + "\"\r\n}", ParameterType.RequestBody);
-            IRestResponse response = client.Execute(request);
-            var tokenAsString = response.Content;
-            log(tokenAsString);
-
-            Newtonsoft.Json.Linq.JContainer jsonToken = (Newtonsoft.Json.Linq.JContainer)JsonConvert.DeserializeObject(tokenAsString);
-
-
-            //Balanco BTC
-            client = new RestClient("https://quantum.atlasquantum.com/api/balance/BTC");
-            client.Timeout = -1;
-            request = new RestRequest(Method.POST);
-            request.AddHeader("Authorization", "Bearer " + jsonToken["access_token"]);
-            request.AddHeader("Content-Type", "text/plain");
-            response = client.Execute(request);
-            tokenAsString = response.Content;
-            log(tokenAsString);
-
-            Newtonsoft.Json.Linq.JContainer jsonBalanceBTC = (Newtonsoft.Json.Linq.JContainer)JsonConvert.DeserializeObject(tokenAsString);
-
-            label7.Text = jsonBalanceBTC["available"].ToString() + " BTC";
-
-
-            if (double.Parse(txtBTC.Text, System.Globalization.NumberStyles.Float) > double.Parse(jsonBalanceBTC["available"].ToString(), System.Globalization.NumberStyles.Float))
-            {
-                MessageBox.Show("Seu SALDO de BITCOIN é inferior ao total que você colocou no campo (Maximo de BTC usado na sua wallet) verifique!");
-                return;
-            }
-
             try
             {
-                double.Parse(txtFEE.Text);
-            }
-            catch
-            {
-                MessageBox.Show("Campo fee errado! Por favor verifique!");
-                return;
-            }
+                var client = new RestClient("https://quantum.atlasquantum.com/api/oauth/token");
+                client.Timeout = -1;
+                var request = new RestRequest(Method.POST);
+                request.AddHeader("Content-Type", "text/plain");
+                request.AddParameter("text/plain", "{\r\n\t\"grant_type\":\"client_credentials\",\r\n\t\"api_key\":\"" + txtID.Text + "\",\r\n\t\"api_secret\":\"" + txtSECRET.Text + "\"\r\n}", ParameterType.RequestBody);
+                IRestResponse response = client.Execute(request);
+                var tokenAsString = response.Content;
+                log(tokenAsString);
 
-            try
-            {
-                double.Parse(txtProfit.Text);
-            }
-            catch
-            {
-                MessageBox.Show("Campo profit errado! Por favor verifique!");
-                return;
-            }
+                Newtonsoft.Json.Linq.JContainer jsonToken = (Newtonsoft.Json.Linq.JContainer)JsonConvert.DeserializeObject(tokenAsString);
 
-            if (txtID.Text == "" || txtSECRET.Text == "")
-            {
-                MessageBox.Show("Você deve preencher o campo ID e SECRET!");
-                return;
-            }
 
-            button2.Enabled = true;
-            button1.Enabled = false;
-            isRunning = true;
-            label10.Text = "Status: INICIADO";
+                //Balanco BTC
+                client = new RestClient("https://quantum.atlasquantum.com/api/balance/BTC");
+                client.Timeout = -1;
+                request = new RestRequest(Method.POST);
+                request.AddHeader("Authorization", "Bearer " + jsonToken["access_token"]);
+                request.AddHeader("Content-Type", "text/plain");
+                response = client.Execute(request);
+                tokenAsString = response.Content;
+                log(tokenAsString);
+
+                Newtonsoft.Json.Linq.JContainer jsonBalanceBTC = (Newtonsoft.Json.Linq.JContainer)JsonConvert.DeserializeObject(tokenAsString);
+
+                label7.Text = jsonBalanceBTC["available"].ToString() + " BTC";
+
+
+                if (double.Parse(txtBTC.Text, System.Globalization.NumberStyles.Float) > double.Parse(jsonBalanceBTC["available"].ToString(), System.Globalization.NumberStyles.Float))
+                {
+                    MessageBox.Show("Seu SALDO de BITCOIN é inferior ao total que você colocou no campo (Maximo de BTC usado na sua wallet) verifique!");
+                    return;
+                }
+
+                try
+                {
+                    double.Parse(txtFEE.Text);
+                }
+                catch
+                {
+                    MessageBox.Show("Campo fee errado! Por favor verifique!");
+                    return;
+                }
+
+                try
+                {
+                    double.Parse(txtProfit.Text);
+                }
+                catch
+                {
+                    MessageBox.Show("Campo profit errado! Por favor verifique!");
+                    return;
+                }
+
+                if (txtID.Text == "" || txtSECRET.Text == "")
+                {
+                    MessageBox.Show("Você deve preencher o campo ID e SECRET!");
+                    return;
+                }
+
+                button2.Enabled = true;
+                button1.Enabled = false;
+                isRunning = true;
+                label10.Text = "Status: INICIADO";
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message + ex.StackTrace);
+                log(ex.Message + ex.StackTrace);
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            button2.Enabled = false;
-            button1.Enabled = true;
-            isRunning = false;
-            label10.Text = "Status: PARADO";
+            try
+            {
+                button2.Enabled = false;
+                button1.Enabled = true;
+                isRunning = false;
+                label10.Text = "Status: PARADO";
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message + ex.StackTrace);
+                log(ex.Message + ex.StackTrace);
+
+            }
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
