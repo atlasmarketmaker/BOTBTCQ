@@ -81,7 +81,6 @@
             this.txtID.Name = "txtID";
             this.txtID.Size = new System.Drawing.Size(257, 20);
             this.txtID.TabIndex = 1;
-            this.txtID.Text = "338342ca9c999caa74300b1b999c7845029588b6cc9b8ef1689c7d";
             // 
             // label2
             // 
@@ -98,7 +97,6 @@
             this.txtSECRET.Name = "txtSECRET";
             this.txtSECRET.Size = new System.Drawing.Size(257, 20);
             this.txtSECRET.TabIndex = 3;
-            this.txtSECRET.Text = "338342c91327248e651c4779af0f21bb48eff41caa3b00e14a34709acd4afe5eb1bbf8";
             // 
             // txtBTC
             // 
