@@ -89,7 +89,7 @@ namespace BOT_BTCQ
             try
             {
                 String path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
-                System.IO.StreamWriter w = new System.IO.StreamWriter(path + "\\" + DateTime.Now.ToString("ddddMMyyyy")+".txt",true);
+                System.IO.StreamWriter w = new System.IO.StreamWriter(path + "\\" + DateTime.Now.ToString("ddMMyyyy")+".txt",true);
                 w.WriteLine("[" + DateTime.Now.ToString() + "] - " + value);
                 w.Close();
                 w.Dispose();
