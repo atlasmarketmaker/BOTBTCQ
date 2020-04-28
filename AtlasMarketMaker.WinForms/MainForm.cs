@@ -2,6 +2,7 @@
 using RestSharp;
 using System;
 using System.Globalization;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -18,14 +19,14 @@ namespace AtlasMarketMaker.WinForms
         {
             CheckForIllegalCrossThreadCalls = false;
 
-            System.Threading.Thread thread = new System.Threading.Thread(dadosPublicos);
+            var thread = new System.Threading.Thread(dadosPublicos);
             thread.Start();
 
-            System.Threading.Thread threadA = new System.Threading.Thread(run);
+            var threadA = new System.Threading.Thread(run);
             threadA.Start();
 
 
-            String aviso = "ATENÇÃO!" + Environment.NewLine + Environment.NewLine;
+            var aviso = "ATENÇÃO!" + Environment.NewLine + Environment.NewLine;
             aviso += "Siga os passos abaixo para melhor usabilidade!" + Environment.NewLine + Environment.NewLine;
             aviso += "1. Crie uma conta nova na exchange da ATLAS!" + Environment.NewLine;
             aviso += "2. Deposite BTC na sua conta nova!" + Environment.NewLine;
@@ -71,19 +72,19 @@ namespace AtlasMarketMaker.WinForms
 
                 }
 
-                //await Task.Delay(3000);
+                Thread.Sleep(3000);
             }
         }
 
         void log(string value)
         {
-            System.Threading.Thread.Sleep(100);
+            Thread.Sleep(100);
             this.Show();
             this.Refresh();
             try
             {
-                String path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
-                System.IO.StreamWriter w = new System.IO.StreamWriter(path + "\\" + DateTime.Now.ToString("ddMMyyyy") + ".txt", true);
+                var path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+                var w = new System.IO.StreamWriter(path + "\\" + DateTime.Now.ToString("ddMMyyyy") + ".txt", true);
                 w.WriteLine("[" + DateTime.Now.ToString() + "] - " + value);
                 w.Close();
                 w.Dispose();
@@ -191,13 +192,13 @@ namespace AtlasMarketMaker.WinForms
                             double lastRate = 0;
                             foreach (var item in orderBook["result"]["Ask"])
                             {
-                                acumulado += double.Parse(item["Rate"].ToString()) * double.Parse(item["Quantity"].ToString(), CultureInfo.InvariantCulture);
-                                if (acumulado > double.Parse(txtBTC.Text))
+                                acumulado += double.Parse(item["Rate"].ToString(), NumberStyles.Float) * double.Parse(item["Quantity"].ToString(), NumberStyles.Float);
+                                if (acumulado > double.Parse(txtBTC.Text, NumberStyles.Float))
                                 {
                                     if (lastRate == 0)
-                                        lastRate = double.Parse(item["Rate"].ToString());
+                                        lastRate = double.Parse(item["Rate"].ToString(), NumberStyles.Float);
 
-                                    double total = Math.Round(double.Parse(txtBTC.Text) / lastRate, 8);
+                                    double total = Math.Round(double.Parse(txtBTC.Text, NumberStyles.Float) / lastRate, 8);
                                     log("Vamos comprar " + total + " BTCQ por " + lastRate + " BTC...");
 
 
@@ -225,8 +226,8 @@ namespace AtlasMarketMaker.WinForms
                                     label8.Text = jsonBalanceBTCQ["available"].ToString() + " BTCQ";
 
 
-                                    double fee = double.Parse(txtFEE.Text) * 2;
-                                    double profit = double.Parse(txtProfit.Text);
+                                    double fee = double.Parse(txtFEE.Text, NumberStyles.Float) * 2;
+                                    double profit = double.Parse(txtProfit.Text, NumberStyles.FLoat);
                                     double valueSell = Math.Round(lastRate + ((lastRate * (fee + profit)) / 100), 8);
                                     log("Vamos vender por " + valueSell + "...");
                                     client = new RestClient("https://quantum.atlasquantum.com/api/sell");
@@ -258,7 +259,7 @@ namespace AtlasMarketMaker.WinForms
 
                 }
 
-                System.Threading.Thread.Sleep(3500);
+                Thread.Sleep(3500);
             }
         }
         private void button1_Click(object sender, EventArgs e)
@@ -275,7 +276,7 @@ namespace AtlasMarketMaker.WinForms
                 var tokenAsString = response.Content;
                 log(tokenAsString);
 
-                Newtonsoft.Json.Linq.JContainer jsonToken = (Newtonsoft.Json.Linq.JContainer)JsonConvert.DeserializeObject(tokenAsString);
+                var jsonToken = (Newtonsoft.Json.Linq.JContainer)JsonConvert.DeserializeObject(tokenAsString);
 
 
                 //Balanco BTC
@@ -288,12 +289,12 @@ namespace AtlasMarketMaker.WinForms
                 tokenAsString = response.Content;
                 log(tokenAsString);
 
-                Newtonsoft.Json.Linq.JContainer jsonBalanceBTC = (Newtonsoft.Json.Linq.JContainer)JsonConvert.DeserializeObject(tokenAsString);
+                var jsonBalanceBTC = (Newtonsoft.Json.Linq.JContainer)JsonConvert.DeserializeObject(tokenAsString);
 
                 label7.Text = jsonBalanceBTC["available"].ToString() + " BTC";
 
 
-                if (double.Parse(txtBTC.Text) > double.Parse(jsonBalanceBTC["available"].ToString()))
+                if (double.Parse(txtBTC.Text, NumberStyles.Float) > double.Parse(jsonBalanceBTC["available"].ToString(), NumberStyles.Float))
                 {
                     MessageBox.Show("Seu SALDO de BITCOIN é inferior ao total que você colocou no campo (Maximo de BTC usado na sua wallet) verifique!");
                     return;
@@ -362,7 +363,6 @@ namespace AtlasMarketMaker.WinForms
         private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             System.Diagnostics.Process.Start("https://github.com/atlasmarketmaker/");
-
         }
     }
 }
