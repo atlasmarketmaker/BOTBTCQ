@@ -227,7 +227,7 @@ namespace AtlasMarketMaker.WinForms
 
 
                                     double fee = double.Parse(txtFEE.Text, NumberStyles.Float) * 2;
-                                    double profit = double.Parse(txtProfit.Text, NumberStyles.FLoat);
+                                    double profit = double.Parse(txtProfit.Text, NumberStyles.Float);
                                     double valueSell = Math.Round(lastRate + ((lastRate * (fee + profit)) / 100), 8);
                                     log("Vamos vender por " + valueSell + "...");
                                     client = new RestClient("https://quantum.atlasquantum.com/api/sell");
