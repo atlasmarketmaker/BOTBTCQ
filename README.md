@@ -1,6 +1,6 @@
-# BOTBTCQ
+# Atlas Market Maker
  
-Download do BOT compilado: https://github.com/atlasmarketmaker/BOTBTCQ/raw/master/BOT_BTCQ/bin/BOTBTCQ_EXECUTAVEL.zip
+Download do BOT compilado está na aba releases: https://github.com/atlasmarketmaker/BOTBTCQ/releases
 
 1. Crie uma conta nova em https://quantum.atlasquantum.com
 2. Envie BTC para esta conta! Você deve estar posicionado em BTC!
@@ -10,5 +10,3 @@ Download do BOT compilado: https://github.com/atlasmarketmaker/BOTBTCQ/raw/maste
 Configure também o total de BTC que você quer usar, taxas e porcentagem de lucro!
 
 Sugiro entrar em contato com a Atlas para poder obter descontos!
-
-
