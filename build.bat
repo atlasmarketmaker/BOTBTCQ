@@ -1,1 +1,1 @@
-dotnet publish -r win-x64 -c Release -o "./Executable/" /p:PublishSingleFile=true
+dotnet publish AtlasMarketMaker.WinForms -r win-x64 -c Release -o "./Executable/" /p:PublishTrimmed=true /p:PublishSingleFile=true && rename ".\Executable\AtlasMarketMaker.Winforms.exe" "AtlasMarketMaker.exe"

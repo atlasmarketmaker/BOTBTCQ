@@ -1,21 +1,15 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using RestSharp;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
+using System.Globalization;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace BOT_BTCQ
+namespace AtlasMarketMaker.WinForms
 {
-    public partial class frmBOTBTCQ : Form
+    public partial class MainForm : Form
     {
-        public frmBOTBTCQ()
+        public MainForm()
         {
             InitializeComponent();
         }
@@ -31,7 +25,7 @@ namespace BOT_BTCQ
             threadA.Start();
 
 
-            String aviso = "ATENÇÃO!" + Environment.NewLine +Environment.NewLine;
+            String aviso = "ATENÇÃO!" + Environment.NewLine + Environment.NewLine;
             aviso += "Siga os passos abaixo para melhor usabilidade!" + Environment.NewLine + Environment.NewLine;
             aviso += "1. Crie uma conta nova na exchange da ATLAS!" + Environment.NewLine;
             aviso += "2. Deposite BTC na sua conta nova!" + Environment.NewLine;
@@ -42,7 +36,7 @@ namespace BOT_BTCQ
 
             aviso += "Obrigado!" + Environment.NewLine;
 
-            MessageBox.Show(aviso,"Atenção!",MessageBoxButtons.OK,MessageBoxIcon.Information);
+            MessageBox.Show(aviso, "Atenção!", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             this.Show();
         }
@@ -77,7 +71,7 @@ namespace BOT_BTCQ
 
                 }
 
-                System.Threading.Thread.Sleep(5000);
+                //await Task.Delay(3000);
             }
         }
 
@@ -89,14 +83,14 @@ namespace BOT_BTCQ
             try
             {
                 String path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
-                System.IO.StreamWriter w = new System.IO.StreamWriter(path + "\\" + DateTime.Now.ToString("ddMMyyyy")+".txt",true);
+                System.IO.StreamWriter w = new System.IO.StreamWriter(path + "\\" + DateTime.Now.ToString("ddMMyyyy") + ".txt", true);
                 w.WriteLine("[" + DateTime.Now.ToString() + "] - " + value);
                 w.Close();
                 w.Dispose();
             }
             catch
-            { 
-            
+            {
+
             }
             listBox1.Items.Add("[" + DateTime.Now.ToString() + "] - " + value);
 
@@ -197,13 +191,13 @@ namespace BOT_BTCQ
                             double lastRate = 0;
                             foreach (var item in orderBook["result"]["Ask"])
                             {
-                                acumulado += double.Parse(item["Rate"].ToString(), System.Globalization.NumberStyles.Float) * double.Parse(item["Quantity"].ToString(), System.Globalization.NumberStyles.Float);
-                                if (acumulado > double.Parse(txtBTC.Text, System.Globalization.NumberStyles.Float))
+                                acumulado += double.Parse(item["Rate"].ToString()) * double.Parse(item["Quantity"].ToString(), CultureInfo.InvariantCulture);
+                                if (acumulado > double.Parse(txtBTC.Text))
                                 {
                                     if (lastRate == 0)
-                                        lastRate = double.Parse(item["Rate"].ToString(), System.Globalization.NumberStyles.Float);
+                                        lastRate = double.Parse(item["Rate"].ToString());
 
-                                    double total = Math.Round(double.Parse(txtBTC.Text, System.Globalization.NumberStyles.Float) / lastRate, 8);
+                                    double total = Math.Round(double.Parse(txtBTC.Text) / lastRate, 8);
                                     log("Vamos comprar " + total + " BTCQ por " + lastRate + " BTC...");
 
 
@@ -231,8 +225,8 @@ namespace BOT_BTCQ
                                     label8.Text = jsonBalanceBTCQ["available"].ToString() + " BTCQ";
 
 
-                                    double fee = double.Parse(txtFEE.Text, System.Globalization.NumberStyles.Float) * 2;
-                                    double profit = double.Parse(txtProfit.Text, System.Globalization.NumberStyles.Float);
+                                    double fee = double.Parse(txtFEE.Text) * 2;
+                                    double profit = double.Parse(txtProfit.Text);
                                     double valueSell = Math.Round(lastRate + ((lastRate * (fee + profit)) / 100), 8);
                                     log("Vamos vender por " + valueSell + "...");
                                     client = new RestClient("https://quantum.atlasquantum.com/api/sell");
@@ -263,7 +257,7 @@ namespace BOT_BTCQ
                 {
 
                 }
-                
+
                 System.Threading.Thread.Sleep(3500);
             }
         }
@@ -299,7 +293,7 @@ namespace BOT_BTCQ
                 label7.Text = jsonBalanceBTC["available"].ToString() + " BTC";
 
 
-                if (double.Parse(txtBTC.Text, System.Globalization.NumberStyles.Float) > double.Parse(jsonBalanceBTC["available"].ToString(), System.Globalization.NumberStyles.Float))
+                if (double.Parse(txtBTC.Text) > double.Parse(jsonBalanceBTC["available"].ToString()))
                 {
                     MessageBox.Show("Seu SALDO de BITCOIN é inferior ao total que você colocou no campo (Maximo de BTC usado na sua wallet) verifique!");
                     return;
@@ -336,7 +330,7 @@ namespace BOT_BTCQ
                 isRunning = true;
                 label10.Text = "Status: INICIADO";
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message + ex.StackTrace);
                 log(ex.Message + ex.StackTrace);
@@ -352,7 +346,7 @@ namespace BOT_BTCQ
                 isRunning = false;
                 label10.Text = "Status: PARADO";
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message + ex.StackTrace);
                 log(ex.Message + ex.StackTrace);
@@ -368,7 +362,7 @@ namespace BOT_BTCQ
         private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             System.Diagnostics.Process.Start("https://github.com/atlasmarketmaker/");
-        
+
         }
     }
 }
