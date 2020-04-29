@@ -235,7 +235,7 @@ namespace AtlasMarketMaker.WinForms
                                     request = new RestRequest(Method.POST);
                                     request.AddHeader("Authorization", "Bearer " + jsonToken["access_token"]);
                                     request.AddHeader("Content-Type", "text/plain");
-                                    request.AddParameter("text/plain", "{\r\n\t\"symbol\":\"BTC-BTCQ\",\r\n\t\"quantity\":" + jsonBalanceBTCQ["available"].ToString().Replace(",", ".") + ",\r\n\t\"price\":" + lastRate.ToString().Replace(",", ".") + ",\r\n\t\"type\":\"LIMIT\"\r\n}", ParameterType.RequestBody);
+                                    request.AddParameter("text/plain", "{\r\n\t\"symbol\":\"BTC-BTCQ\",\r\n\t\"quantity\":" + jsonBalanceBTCQ["available"].ToString().Replace(",", ".") + ",\r\n\t\"price\":" + valueSell.ToString() + ",\r\n\t\"type\":\"LIMIT\"\r\n}", ParameterType.RequestBody);
                                     response = client.Execute(request);
                                     var jsonAsStringSell = response.Content;
 
